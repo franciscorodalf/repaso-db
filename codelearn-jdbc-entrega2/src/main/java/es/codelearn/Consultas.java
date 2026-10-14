@@ -6,24 +6,37 @@ import java.util.ArrayList;
 
 /** Ejercicios del alumnado: completa los 12 métodos sin cambiar sus firmas. */
 public final class Consultas {
-    private Consultas() { }
+    private Consultas() {
+    }
 
     /** Ejercicio: COUNT(*) de Productos; debe devolver 0 si la tabla está vacía. */
     public static int contarProductos() {
-        // TODO: abre la conexión con BaseDatos.conectar(),
-        // usa PreparedStatement y ResultSet dentro de try-with-resources.
-        // Captura SQLException aquí: no añadas throws SQLException.
-        // Ante error SQL: int=-1, double=NaN, boolean=false, lista vacía.
-        return -1;
+        String sql = "SELECT COUNT(*) from Productos";
+        try (var conectar = BaseDatos.conectar();
+                var statement = conectar.prepareStatement(sql)) {
+            try (var rs = statement.executeQuery()) {
+                rs.next();
+                return rs.getInt(1);
+            }
+        } catch (java.sql.SQLException e) {
+            System.err.println("Error SQL: " + e.getMessage());
+            return -1;
+        }
     }
 
     /** Ejercicio: COUNT(*) de Vehiculos. */
     public static int contarVehiculos() {
-        // TODO: abre la conexión con BaseDatos.conectar(),
-        // usa PreparedStatement y ResultSet dentro de try-with-resources.
-        // Captura SQLException aquí: no añadas throws SQLException.
-        // Ante error SQL: int=-1, double=NaN, boolean=false, lista vacía.
+       String sql = "Select COUNT(*) FROM Vehiculos";
+       try (var connection = BaseDatos.conectar();
+            var statement = connection.prepareStatement(sql)) {
+                try (var rs = statement.executeQuery()){
+                    rs.next();
+                    return rs.getInt(1);
+                } 
+       } catch (java.sql.SQLException e) {
+        System.err.println("Error SQL: " + e.getMessage());
         return -1;
+       }
     }
 
     /** Ejercicio: EXISTS o COUNT de Productos filtrando por id con ?. */
@@ -98,7 +111,10 @@ public final class Consultas {
         return List.of();
     }
 
-    /** Ejercicio: Nombres de Productos con precio > parámetro, ORDER BY precio DESC, nombre ASC. */
+    /**
+     * Ejercicio: Nombres de Productos con precio > parámetro, ORDER BY precio DESC,
+     * nombre ASC.
+     */
     public static List<String> listarProductosCaros(double precio) {
         // TODO: abre la conexión con BaseDatos.conectar(),
         // usa PreparedStatement y ResultSet dentro de try-with-resources.
@@ -107,7 +123,10 @@ public final class Consultas {
         return List.of();
     }
 
-    /** Ejercicio: Marcas agrupadas con COUNT(*) >= minimo; ORDER BY cantidad DESC, marca ASC. */
+    /**
+     * Ejercicio: Marcas agrupadas con COUNT(*) >= minimo; ORDER BY cantidad DESC,
+     * marca ASC.
+     */
     public static List<String> listarMarcasFrecuentes(int minimo) {
         // TODO: abre la conexión con BaseDatos.conectar(),
         // usa PreparedStatement y ResultSet dentro de try-with-resources.
