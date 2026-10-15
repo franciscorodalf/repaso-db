@@ -1,6 +1,6 @@
 package es.codelearn;
 
-import java.sql.*;
+
 import java.util.List;
 import java.util.ArrayList;
 
@@ -26,89 +26,152 @@ public final class Consultas {
 
     /** Ejercicio: COUNT(*) de Vehiculos. */
     public static int contarVehiculos() {
-       String sql = "Select COUNT(*) FROM Vehiculos";
-       try (var connection = BaseDatos.conectar();
-            var statement = connection.prepareStatement(sql)) {
-                try (var rs = statement.executeQuery()){
-                    rs.next();
-                    return rs.getInt(1);
-                } 
-       } catch (java.sql.SQLException e) {
-        System.err.println("Error SQL: " + e.getMessage());
-        return -1;
-       }
+        String sql = "Select COUNT(*) FROM Vehiculos";
+        try (var connection = BaseDatos.conectar();
+                var statement = connection.prepareStatement(sql)) {
+            try (var rs = statement.executeQuery()) {
+                rs.next();
+                return rs.getInt(1);
+            }
+        } catch (java.sql.SQLException e) {
+            System.err.println("Error SQL: " + e.getMessage());
+            return -1;
+        }
     }
 
     /** Ejercicio: EXISTS o COUNT de Productos filtrando por id con ?. */
     public static boolean existeProducto(int id) {
-        // TODO: abre la conexión con BaseDatos.conectar(),
-        // usa PreparedStatement y ResultSet dentro de try-with-resources.
-        // Captura SQLException aquí: no añadas throws SQLException.
-        // Ante error SQL: int=-1, double=NaN, boolean=false, lista vacía.
-        return false;
+        String sql = "Select COUNT(1) from Productos where id = ?";
+        boolean existe = false;
+        try (var connection = BaseDatos.conectar();
+                var statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, id);
+            try (var rs = statement.executeQuery()) {
+                if (rs.next()) {
+                    existe = rs.getInt(1) > 0;
+                }
+                return existe;
+            }
+        } catch (java.sql.SQLException e) {
+            System.err.println("Error SQL: " + e.getMessage());
+            return false;
+        }
     }
 
     /** Ejercicio: EXISTS o COUNT de Vehiculos filtrando por matrícula con ?. */
     public static boolean existeVehiculo(String matricula) {
-        // TODO: abre la conexión con BaseDatos.conectar(),
-        // usa PreparedStatement y ResultSet dentro de try-with-resources.
-        // Captura SQLException aquí: no añadas throws SQLException.
-        // Ante error SQL: int=-1, double=NaN, boolean=false, lista vacía.
-        return false;
+        String sql = "Select COUNT(1) from Vehiculos where matricula = ?";
+        boolean existe = false;
+        try (var connection = BaseDatos.conectar();
+                var statement = connection.prepareStatement(sql)) {
+            statement.setString(1, matricula);
+            try (var rs = statement.executeQuery()) {
+                if (rs.next()) {
+                    existe = rs.getInt(1) > 0;
+                }
+                return existe;
+            }
+        } catch (java.sql.SQLException e) {
+            System.err.println("Error SQL: " + e.getMessage());
+            return false;
+        }
     }
 
     /** Ejercicio: COUNT(*) con precio estrictamente MAYOR que el parámetro. */
     public static int contarProductosCaros(double precio) {
-        // TODO: abre la conexión con BaseDatos.conectar(),
-        // usa PreparedStatement y ResultSet dentro de try-with-resources.
-        // Captura SQLException aquí: no añadas throws SQLException.
-        // Ante error SQL: int=-1, double=NaN, boolean=false, lista vacía.
-        return -1;
+        String sql = "Select COUNT(*) from Productos where precio > ?";
+        try (var connection = BaseDatos.conectar();
+                var statement = connection.prepareStatement(sql)) {
+            statement.setDouble(1, precio);
+            try (var rs = statement.executeQuery()) {
+                rs.next();
+                return rs.getInt(1);
+            }
+        } catch (java.sql.SQLException e) {
+            System.err.println("Error SQL: " + e.getMessage());
+            return -1;
+        }
+
     }
 
     /** Ejercicio: COUNT(*) de la marca exacta proporcionada. */
     public static int contarVehiculosMarca(String marca) {
-        // TODO: abre la conexión con BaseDatos.conectar(),
-        // usa PreparedStatement y ResultSet dentro de try-with-resources.
-        // Captura SQLException aquí: no añadas throws SQLException.
-        // Ante error SQL: int=-1, double=NaN, boolean=false, lista vacía.
-        return -1;
+        String sql = "Select COUNT(*) from Vehiculos where marca = ?";
+        try (var connection = BaseDatos.conectar();
+                var statement = connection.prepareStatement(sql)) {
+            statement.setString(1, marca);
+            try (var rs = statement.executeQuery()) {
+                rs.next();
+                return rs.getInt(1);
+            }
+        } catch (java.sql.SQLException e) {
+            System.err.println("Error SQL: " + e.getMessage());
+            return -1;
+        }
+
     }
 
     /** Ejercicio: AVG(precio); para tabla vacía devolver 0.0. */
     public static double obtenerPrecioMedio() {
-        // TODO: abre la conexión con BaseDatos.conectar(),
-        // usa PreparedStatement y ResultSet dentro de try-with-resources.
-        // Captura SQLException aquí: no añadas throws SQLException.
-        // Ante error SQL: int=-1, double=NaN, boolean=false, lista vacía.
-        return Double.NaN;
+        String sql = "Select AVG(precio) from Productos";
+        try (var connection = BaseDatos.conectar();
+                var statement = connection.prepareStatement(sql)) {
+            try (var rs = statement.executeQuery()) {
+                rs.next();
+                return rs.getDouble(1);
+            }
+        } catch (java.sql.SQLException e) {
+            System.err.println("Error SQL: " + e.getMessage());
+            return Double.NaN;
+        }
     }
 
     /** Ejercicio: MAX(precio); para tabla vacía devolver 0.0. */
     public static double obtenerPrecioMaximo() {
-        // TODO: abre la conexión con BaseDatos.conectar(),
-        // usa PreparedStatement y ResultSet dentro de try-with-resources.
-        // Captura SQLException aquí: no añadas throws SQLException.
-        // Ante error SQL: int=-1, double=NaN, boolean=false, lista vacía.
-        return Double.NaN;
+        String sql = "Select MAX(precio) from Productos";
+        try (var connection = BaseDatos.conectar();
+                var statement = connection.prepareStatement(sql)) {
+            try (var rs = statement.executeQuery()) {
+                rs.next();
+                return rs.getDouble(1);
+            }
+        } catch (java.sql.SQLException e) {
+            System.err.println("Error SQL: " + e.getMessage());
+            return Double.NaN;
+        }
     }
 
     /** Ejercicio: MIN(precio); para tabla vacía devolver 0.0. */
     public static double obtenerPrecioMinimo() {
-        // TODO: abre la conexión con BaseDatos.conectar(),
-        // usa PreparedStatement y ResultSet dentro de try-with-resources.
-        // Captura SQLException aquí: no añadas throws SQLException.
-        // Ante error SQL: int=-1, double=NaN, boolean=false, lista vacía.
-        return Double.NaN;
+        String sql = "Select MIN(precio) from Productos";
+        try (var connection = BaseDatos.conectar();
+                var statement = connection.prepareStatement(sql)) {
+            try (var rs = statement.executeQuery()) {
+                rs.next();
+                return rs.getDouble(1);
+            }
+        } catch (java.sql.SQLException e) {
+            System.err.println("Error SQL: " + e.getMessage());
+            return Double.NaN;
+        }
     }
 
     /** Ejercicio: DISTINCT marca de Vehiculos ordenadas alfabéticamente ASC. */
     public static List<String> listarMarcas() {
-        // TODO: abre la conexión con BaseDatos.conectar(),
-        // usa PreparedStatement y ResultSet dentro de try-with-resources.
-        // Captura SQLException aquí: no añadas throws SQLException.
-        // Ante error SQL: int=-1, double=NaN, boolean=false, lista vacía.
-        return List.of();
+        String sql = "Select DISTINCT marca from Vehiculos ORDER BY marca asc";
+        try (var connection = BaseDatos.conectar();
+                var statement = connection.prepareStatement(sql)) {
+            List<String> list = new ArrayList<>();
+            try (var rs = statement.executeQuery()) {
+                while (rs.next()) {
+                    list.add(rs.getString(1));
+                }
+                return list;
+            }
+        } catch (java.sql.SQLException e) {
+            System.err.println("Error SQL: " + e.getMessage());
+            return List.of();
+        }
     }
 
     /**
@@ -116,11 +179,22 @@ public final class Consultas {
      * nombre ASC.
      */
     public static List<String> listarProductosCaros(double precio) {
-        // TODO: abre la conexión con BaseDatos.conectar(),
-        // usa PreparedStatement y ResultSet dentro de try-with-resources.
-        // Captura SQLException aquí: no añadas throws SQLException.
-        // Ante error SQL: int=-1, double=NaN, boolean=false, lista vacía.
-        return List.of();
+        String sql = "Select nombre from Productos where precio > ? ORDER BY precio DESC,nombre ASC";
+        try (var connection = BaseDatos.conectar();
+                var statement = connection.prepareStatement(sql)) {
+            List<String> list = new ArrayList<>();
+            statement.setDouble(1, precio);
+            try (var rs = statement.executeQuery()) {
+                while (rs.next()) {
+                    list.add(rs.getString(1));
+                }
+                return list;
+            }
+        } catch (java.sql.SQLException e) {
+            System.err.println("Error SQL: " + e.getMessage());
+            return List.of();
+        }
+
     }
 
     /**
@@ -128,11 +202,23 @@ public final class Consultas {
      * marca ASC.
      */
     public static List<String> listarMarcasFrecuentes(int minimo) {
-        // TODO: abre la conexión con BaseDatos.conectar(),
-        // usa PreparedStatement y ResultSet dentro de try-with-resources.
-        // Captura SQLException aquí: no añadas throws SQLException.
-        // Ante error SQL: int=-1, double=NaN, boolean=false, lista vacía.
-        return List.of();
+        String sql = "SELECT marca, COUNT(*) AS cantidad FROM Vehiculos GROUP BY marca HAVING COUNT(*) >= ? ORDER BY cantidad DESC, marca ASC";
+
+        try (var connection = BaseDatos.conectar();
+                var statement = connection.prepareStatement(sql)) {
+            List<String> list = new ArrayList<>();
+            statement.setInt(1, minimo);
+            try (var rs = statement.executeQuery()) {
+                while (rs.next()) {
+                    list.add(rs.getString(1));
+                }
+                return list;
+            }
+
+        } catch (java.sql.SQLException e) {
+            System.err.println("Error SQL: " + e.getMessage());
+            return List.of();
+        }
     }
 
 }
