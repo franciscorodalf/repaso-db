@@ -154,7 +154,7 @@ public final class Consultas {
             System.err.println("Error SQL: " + e.getMessage());
             return Double.NaN;
         }
-    }
+    } 
 
     /** Ejercicio: DISTINCT marca de Vehiculos ordenadas alfabéticamente ASC. */
     public static List<String> listarMarcas() {
