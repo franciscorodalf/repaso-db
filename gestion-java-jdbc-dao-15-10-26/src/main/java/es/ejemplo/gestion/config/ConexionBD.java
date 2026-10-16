@@ -9,19 +9,25 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 /** Abre una conexión en la base SQLite indicada por el constructor. */
-public  class ConexionBD {
-    private  String url;
+public class ConexionBD {
+    private String url;
 
     public ConexionBD(String url) {
+        String nuevaURL = url.substring("jdbc:sqlite:".length());
         this.url = url;
-        Path path = Path.of(url);
+        Path path = Path.of(nuevaURL);
+
+        if (!Files.exists(path)) {
+            throw new AplicationException("No existe la base de datos");
+        }
+
     }
 
     public Connection obtenerConexion() {
-         try {
-        return DriverManager.getConnection(url);
-    } catch (SQLException e) {
-        throw new AplicationException("Error conectando con SQLite", e);
-    }
+        try {
+            return DriverManager.getConnection(url);
+        } catch (SQLException e) {
+            throw new AplicationException("Error conectando con SQLite", e);
+        }
     }
 }
