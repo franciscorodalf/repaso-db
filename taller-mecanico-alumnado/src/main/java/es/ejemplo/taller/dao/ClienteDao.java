@@ -24,6 +24,9 @@ public class ClienteDao extends AbstractDao<Cliente> {
     }
 
     public Optional<Cliente> buscarPorId(Integer id) {
+        if (id == null) {
+            return Optional.empty();
+        }
         String sql = "SELECT id_cliente, nombre,email,telefono FROM Clientes WHERE id_cliente = ? order by id_cliente";
         try (Connection connection = ConexionBD.abrir(url);
                 PreparedStatement ps = connection.prepareStatement(sql)) {
@@ -80,7 +83,7 @@ public class ClienteDao extends AbstractDao<Cliente> {
             ps.setInt(1, id);
             return ejecutar(ps);
         } catch (SQLException e) {
-            registrar("Actualizar cliente", e);
+            registrar("Eliminar cliente", e);
             return 0;
         }
     }

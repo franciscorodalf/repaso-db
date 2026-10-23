@@ -1,34 +1,124 @@
 package es.ejemplo.taller.dao;
+
+import es.ejemplo.taller.infra.ConexionBD;
 import es.ejemplo.taller.modelo.Mecanico;
 import java.sql.*;
 import java.util.*;
-import java.math.BigDecimal;
-public class MecanicoDao  {
+
+public class MecanicoDao extends AbstractDao<Mecanico> {
     private final String url;
-    public MecanicoDao(String url) { this.url = url; }
-    
+
+    public MecanicoDao(String url) {
+        this.url = url;
+    }
+
     public List<Mecanico> listar() {
-        // TODO: implementar según el contrato del README.
-        return List.of();
+        String sql = "SELECT id_mecanico,nombre,especialidad,tarifa_hora FROM Mecanicos order by id_mecanico";
+        try (Connection connection = ConexionBD.abrir(url);
+                PreparedStatement ps = connection.prepareStatement(sql)) {
+            return consultar(ps);
+        } catch (SQLException e) {
+            registrar("Listar mecanico", e);
+            return List.of();
+        }
     }
+
     public Optional<Mecanico> buscarPorId(Integer id) {
-        // TODO: implementar según el contrato del README.
-        return Optional.empty();
+        if (id == null) {
+            return Optional.empty();
+        }
+        String sql = "SELECT id_mecanico,nombre,especialidad,tarifa_hora FROM Mecanicos WHERE id_mecanico = ? ";
+        try (Connection connection = ConexionBD.abrir(url);
+                PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            return consultarUno(ps);
+        } catch (SQLException e) {
+            registrar("Buscar por id de mecanico", e);
+            return Optional.empty();
+        }
     }
+
     public int insertar(Mecanico dato) {
-        // TODO: implementar según el contrato del README.
-        return 0;
+        if (dato == null) {
+            return 0;
+        }
+        String sql = "INSERT INTO Mecanicos (nombre,especialidad,tarifa_hora) VALUES (?,?,?)";
+        try (Connection connection = ConexionBD.abrir(url);
+                PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, dato.getNombre());
+            ps.setString(2, dato.getEspecialidad());
+            ps.setBigDecimal(3, dato.getTarifaHora());
+            return insertarId(ps);
+        } catch (SQLException e) {
+            registrar("Insertar mecanico", e);
+            return 0;
+        }
     }
+
     public int actualizar(Mecanico dato) {
-        // TODO: implementar según el contrato del README.
-        return 0;
+        if (dato == null || dato.getIdMecanico() == null || dato.getNombre().isBlank()) {
+            return 0;
+        } // nombre,especialidad,tarifa_hora
+        String sql = "UPDATE Mecanicos SET  nombre = ?, especialidad = ?, tarifa_hora = ? WHERE id_mecanico = ?";
+        try (Connection connection = ConexionBD.abrir(url);
+                PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, dato.getNombre());
+            ps.setString(2, dato.getEspecialidad());
+            ps.setBigDecimal(3, dato.getTarifaHora());
+            ps.setInt(4, dato.getIdMecanico());
+            return ejecutar(ps);
+        } catch (SQLException e) {
+            registrar("Actualizar mecanico", e);
+            return 0;
+        }
     }
+
     public int eliminar(Integer id) {
-        // TODO: implementar según el contrato del README.
-        return 0;
+        if (id == null) {
+            return 0;
+        }
+        String sql = "DELETE FROM Mecanicos WHERE id_mecanico = ?";
+        try (Connection connection = ConexionBD.abrir(url);
+                PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            return ejecutar(ps);
+        } catch (SQLException e) {
+            registrar("Eliminar mecanico", e);
+            return 0;
+        }
     }
+
     public List<Mecanico> buscarPorEspecialidad(String especialidad) {
-        // TODO: implementar según el contrato del README.
-        return List.of();
+        if (especialidad == null || especialidad.isBlank()) {
+            return List.of();
+        }
+
+        String sql = "SELECT id_mecanico,nombre,especialidad,tarifa_hora FROM Mecanicos WHERE especialidad = ?";
+        try (Connection connection = ConexionBD.abrir(url);
+                PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, especialidad);
+            return consultar(ps);
+        } catch (SQLException e) {
+            registrar("Buscar por especialidad de mecanico", e);
+            return List.of();
+        }
+    }
+
+    /**
+     * private Integer idMecanico;
+     * private String nombre;
+     * private String especialidad;
+     * private BigDecimal tarifaHora;
+     */
+    @Override
+    protected Optional<Mecanico> mapRsToClass(ResultSet rs) {
+        try {
+            return Optional
+                    .of(new Mecanico(rs.getInt("id_mecanico"), rs.getString("nombre"), rs.getString("especialidad"),
+                            rs.getBigDecimal("tarifa_hora")));
+        } catch (SQLException | RuntimeException e) {
+            registrar("mapRsToClass mecanico", e);
+            return Optional.empty();
+        }
     }
 }
