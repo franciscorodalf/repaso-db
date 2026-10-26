@@ -12,7 +12,7 @@ import java.util.logging.Logger;
 
 public abstract class AbstractDao<T> {
 
-    private static Logger LOG = Logger.getLogger(AbstractDao.class.getName());
+    private static final Logger LOG = Logger.getLogger(AbstractDao.class.getName());
 
     protected abstract Optional<T> mapRsToClass(ResultSet rs);
 
@@ -91,6 +91,10 @@ public abstract class AbstractDao<T> {
             registrar("consultarDecimal", e);
             return BigDecimal.ZERO;
         }
+    }
+
+    protected boolean textoValido(String texto) {
+        return texto != null && !texto.isBlank();
     }
 
     protected void registrar(String operacion, Exception e) {

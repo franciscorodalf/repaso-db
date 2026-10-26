@@ -33,7 +33,7 @@ public class ProductoDao extends AbstractDao<Producto> {
             registrar("listar productos", e);
             return List.of();
         }
-    }P
+    }
 
     // TODO: implementa cada método con PreparedStatement y try-with-resources.
     // IMPORTANTE: buscarPorId y eliminar usan Integer; la clase base NO necesita

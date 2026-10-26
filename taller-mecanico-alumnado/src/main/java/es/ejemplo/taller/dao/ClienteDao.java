@@ -27,7 +27,7 @@ public class ClienteDao extends AbstractDao<Cliente> {
         if (id == null) {
             return Optional.empty();
         }
-        String sql = "SELECT id_cliente, nombre,email,telefono FROM Clientes WHERE id_cliente = ? order by id_cliente";
+        String sql = "SELECT id_cliente, nombre,email,telefono FROM Clientes WHERE id_cliente = ?";
         try (Connection connection = ConexionBD.abrir(url);
                 PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1, id);
@@ -39,7 +39,7 @@ public class ClienteDao extends AbstractDao<Cliente> {
     }
 
     public int insertar(Cliente dato) {
-        if (dato == null) {
+        if (dato == null || !textoValido(dato.getNombre()) || !textoValido(dato.getEmail())) {
             return 0;
         }
         String sql = "INSERT INTO Clientes (nombre, email, telefono) VALUES (?,?,?) ";
@@ -56,7 +56,8 @@ public class ClienteDao extends AbstractDao<Cliente> {
     }
 
     public int actualizar(Cliente dato) {
-          if (dato == null) {
+        if (dato == null || dato.getIdCliente() == null || !textoValido(dato.getNombre())
+                || !textoValido(dato.getEmail())) {
             return 0;
         }
         String sql = "UPDATE Clientes SET  nombre = ?, email = ?, telefono = ? WHERE id_cliente = ?";

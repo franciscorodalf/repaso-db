@@ -9,11 +9,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public final class ConexionBD {
-    private String url;
-
     public ConexionBD(String url) throws SQLException {
         String nuevaURL = url.substring("jdbc:sqlite:".length());
-        this.url = url;
         Path path = Path.of(nuevaURL);
 
         if (!Files.exists(path)) {

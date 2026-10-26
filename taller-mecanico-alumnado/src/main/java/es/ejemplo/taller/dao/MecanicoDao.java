@@ -39,7 +39,8 @@ public class MecanicoDao extends AbstractDao<Mecanico> {
     }
 
     public int insertar(Mecanico dato) {
-        if (dato == null) {
+        if (dato == null || !textoValido(dato.getNombre()) || !textoValido(dato.getEspecialidad())
+                || dato.getTarifaHora() == null || dato.getTarifaHora().signum() < 0) {
             return 0;
         }
         String sql = "INSERT INTO Mecanicos (nombre,especialidad,tarifa_hora) VALUES (?,?,?)";
@@ -56,9 +57,11 @@ public class MecanicoDao extends AbstractDao<Mecanico> {
     }
 
     public int actualizar(Mecanico dato) {
-        if (dato == null || dato.getIdMecanico() == null || dato.getNombre().isBlank()) {
+        if (dato == null || dato.getIdMecanico() == null || !textoValido(dato.getNombre())
+                || !textoValido(dato.getEspecialidad()) || dato.getTarifaHora() == null
+                || dato.getTarifaHora().signum() < 0) {
             return 0;
-        } // nombre,especialidad,tarifa_hora
+        }
         String sql = "UPDATE Mecanicos SET  nombre = ?, especialidad = ?, tarifa_hora = ? WHERE id_mecanico = ?";
         try (Connection connection = ConexionBD.abrir(url);
                 PreparedStatement ps = connection.prepareStatement(sql)) {
