@@ -91,6 +91,9 @@ public final class ClienteDao extends ConexionBD implements IClienteDao {
       if (entidad == null) {
          return 0;
       }
+      if (entidad.getId() == null) {
+         throw new IllegalArgumentException("El cliente necesita un id para actualizar");
+      }
 
       String sql = "UPDATE clientes SET nombre = ?,email = ?,telefono = ? WHERE id = ?";
 
@@ -110,8 +113,17 @@ public final class ClienteDao extends ConexionBD implements IClienteDao {
 
    @Override
    public int eliminar(Integer id) {
-      // TODO Auto-generated method stub
-      throw new UnsupportedOperationException("Unimplemented method 'eliminar'");
+      String sql = "DELETE FROM clientes WHERE id = ?";
+
+      try (Connection connection = obtenerConexion();
+            PreparedStatement statement = connection.prepareStatement(sql)) {
+         statement.setInt(1, id);
+
+         return statement.executeUpdate();
+
+      } catch (SQLException e) {
+         throw new DaoException("Error eliminando cliente", e);
+      }
    }
 
 }
