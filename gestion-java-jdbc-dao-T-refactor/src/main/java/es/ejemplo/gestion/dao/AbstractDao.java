@@ -64,7 +64,10 @@ public abstract class AbstractDao<T, ID> extends ConexionBD {
     // Plantillas JDBC para las consultas propias de cada DAO
     // ------------------------------------------------------------------
 
-    /** SELECT que devuelve varias filas. Si una fila no se puede mapear, lista vacia. */
+    /**
+     * SELECT que devuelve varias filas. Si una fila no se puede mapear, lista
+     * vacia.
+     */
     protected List<T> consultarLista(String sql, Object... params) {
         return ejecutarSql(sql, params, List.of(), ps -> {
             try (ResultSet rs = ps.executeQuery()) {
@@ -131,7 +134,10 @@ public abstract class AbstractDao<T, ID> extends ConexionBD {
         R aplicar(PreparedStatement ps) throws SQLException;
     }
 
-    /** Unico sitio donde se abre la conexion, se asignan parametros y se captura el error. */
+    /**
+     * Unico sitio donde se abre la conexion, se asignan parametros y se captura el
+     * error.
+     */
     private <R> R ejecutarSql(String sql, Object[] params, R porDefecto, Operacion<R> operacion) {
         try (Connection con = obtenerConexion()) {
             if (con == null) {
